@@ -11,7 +11,6 @@ import {
   Icon,
   Banner,
 } from "@shopify/polaris";
-import { CircleTickMajor, ArrowRightMinor } from "@shopify/polaris-icons";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }) => {
@@ -45,7 +44,6 @@ export default function Welcome() {
           <Banner
             title="Setup Complete!"
             tone="success"
-            icon={CircleTickMajor}
           >
             <p>Your billing has been successfully set up. You're now ready to configure your SAP to Shopify integration.</p>
           </Banner>
@@ -83,7 +81,6 @@ export default function Welcome() {
               <InlineStack align="start" gap="400">
                 <Button
                   primary
-                  icon={ArrowRightMinor}
                   onClick={handleAccessWordPress}
                 >
                   Access WordPress Dashboard
