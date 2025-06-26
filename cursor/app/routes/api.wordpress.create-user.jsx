@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { authenticate } from "../../shopify.server";
+import { authenticate } from "../shopify.server";
 import crypto from "crypto";
 
 export const action = async ({ request }) => {
