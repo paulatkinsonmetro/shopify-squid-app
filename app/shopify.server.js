@@ -5,6 +5,36 @@ import {
   shopifyApp,
 } from "@shopify/shopify-app-remix/server";
 
+// Simple in-memory session storage for development
+const sessions = new Map();
+
+const customSessionStorage = {
+  async storeSession(session) {
+    sessions.set(session.id, session);
+    return Promise.resolve();
+  },
+  async loadSession(id) {
+    return Promise.resolve(sessions.get(id) || undefined);
+  },
+  async deleteSession(id) {
+    sessions.delete(id);
+    return Promise.resolve();
+  },
+  async deleteSessions(ids) {
+    ids.forEach(id => sessions.delete(id));
+    return Promise.resolve();
+  },
+  async findSessionsByShop(shop) {
+    const shopSessions = [];
+    for (const [id, session] of sessions.entries()) {
+      if (session.shop === shop) {
+        shopSessions.push(session);
+      }
+    }
+    return Promise.resolve(shopSessions);
+  }
+};
+
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
@@ -12,7 +42,7 @@ const shopify = shopifyApp({
   scopes: process.env.SCOPES?.split(","),
   appUrl: process.env.SHOPIFY_APP_URL || "",
   authPathPrefix: "/auth",
-  sessionStorage: undefined,
+  sessionStorage: customSessionStorage,
   distribution: AppDistribution.AppStore,
   future: {
     unstable_newEmbeddedAuthStrategy: true,
