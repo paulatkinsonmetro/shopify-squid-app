@@ -1,33 +1,72 @@
 import { redirect } from "@remix-run/node";
-import { authenticate } from "../shopify.server";
+import { useLoaderData } from "@remix-run/react";
+import {
+  Page,
+  Layout,
+  Card,
+  Text,
+  TextContainer,
+  Button,
+  InlineStack,
+} from "@shopify/polaris";
 
-// On initial load, authenticate the user and redirect them based on billing status
 export const loader = async ({ request }) => {
-  const { admin, session } = await authenticate.admin(request);
+  const url = new URL(request.url);
+  const shop = url.searchParams.get("shop");
   
-  try {
-    // Check if user has active billing
-    const { hasActivePayment } = await admin.billing.check({
-      plans: ["basic-monthly", "basic-yearly", "multi-monthly", "multi-yearly", "business-monthly", "business-yearly", "enterprise-monthly", "enterprise-yearly"],
-      isTest: true,
-    });
-
-    if (hasActivePayment) {
-      // User has active billing, redirect to welcome page
-      return redirect(`/welcome?shop=${session.shop}`);
-    } else {
-      // User doesn't have billing, redirect to dashboard to select plan
-      return redirect(`/dashboard?shop=${session.shop}`);
-    }
-  } catch (error) {
-    console.error("Billing check error:", error);
-    // If billing check fails, redirect to dashboard
-    return redirect(`/dashboard?shop=${session.shop}`);
+  // If no shop parameter, redirect to root
+  if (!shop) {
+    return redirect("/");
   }
+  
+  return { shop };
 };
 
-export default function Index() {
-  return null; // No UI needed since we're redirecting
+export default function AppIndex() {
+  const { shop } = useLoaderData();
+
+  const handleAuthenticate = () => {
+    // Redirect to auth flow
+    window.location.href = `/auth?shop=${shop}`;
+  };
+
+  const handleGoToDashboard = () => {
+    // Try to go directly to dashboard
+    window.location.href = `/dashboard?shop=${shop}`;
+  };
+
+  return (
+    <Page title="Welcome to Squid Commerce Connector" sectioned>
+      <Layout>
+        <Layout.Section>
+          <Card>
+            <TextContainer spacing="tight">
+              <Text variant="headingLg" as="h2">
+                Welcome to Squid Commerce Connector!
+              </Text>
+              <Text>
+                Your Shopify store <strong>{shop}</strong> is ready to be connected to your SAP system.
+              </Text>
+              <Text>
+                Please authenticate to continue with the setup.
+              </Text>
+            </TextContainer>
+          </Card>
+        </Layout.Section>
+        
+        <Layout.Section>
+          <InlineStack gap="400">
+            <Button primary onClick={handleAuthenticate}>
+              Authenticate
+            </Button>
+            <Button onClick={handleGoToDashboard}>
+              Go to Dashboard
+            </Button>
+          </InlineStack>
+        </Layout.Section>
+      </Layout>
+    </Page>
+  );
 }
 
 
