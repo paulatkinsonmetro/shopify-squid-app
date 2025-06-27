@@ -9,6 +9,7 @@ import {
   Button,
   InlineStack,
 } from "@shopify/polaris";
+import { login } from "../shopify.server";
 
 export const loader = async ({ request }) => {
   const url = new URL(request.url);
@@ -22,13 +23,13 @@ export const loader = async ({ request }) => {
   return { shop };
 };
 
+export const action = async ({ request }) => {
+  // Handle the login action
+  return await login(request);
+};
+
 export default function AppIndex() {
   const { shop } = useLoaderData();
-
-  const handleAuthenticate = () => {
-    // Redirect to auth flow
-    window.location.href = `/auth?shop=${shop}`;
-  };
 
   const handleGoToDashboard = () => {
     // Try to go directly to dashboard
@@ -56,9 +57,12 @@ export default function AppIndex() {
         
         <Layout.Section>
           <InlineStack gap="400">
-            <Button primary onClick={handleAuthenticate}>
-              Authenticate
-            </Button>
+            <form method="post">
+              <input type="hidden" name="shop" value={shop} />
+              <Button submit primary>
+                Authenticate with Shopify
+              </Button>
+            </form>
             <Button onClick={handleGoToDashboard}>
               Go to Dashboard
             </Button>
