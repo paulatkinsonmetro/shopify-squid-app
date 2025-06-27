@@ -1,6 +1,5 @@
 import { redirect } from "@remix-run/node";
 import { authenticate } from "../shopify.server";
-import shopify from "../shopify.server";
 
 export const loader = async ({ request }) => {
   const url = new URL(request.url);
@@ -10,22 +9,27 @@ export const loader = async ({ request }) => {
     throw new Response("Missing planId", { status: 400 });
   }
 
-  // Get session from request using authenticate.admin()
-  const { session } = await authenticate.admin(request);
+  try {
+    // Get session from request using authenticate.admin()
+    const { admin, session } = await authenticate.admin(request);
 
-  // Check billing status or request new billing URL
-  const { hasActivePayment, confirmationUrl } = await shopify.billing.check({
-    session,
-    plans: [planId],
-    isTest: true,
-  });
+    // Check billing status or request new billing URL
+    const { hasActivePayment, confirmationUrl } = await admin.billing.check({
+      plans: [planId],
+      isTest: true,
+    });
 
-  if (hasActivePayment) {
-    // User already has active billing, redirect to welcome page
-    return redirect(`/welcome?shop=${session.shop}`);
+    if (hasActivePayment) {
+      // User already has active billing, redirect to welcome page
+      return redirect(`/welcome?shop=${session.shop}`);
+    }
+
+    return redirect(confirmationUrl);
+  } catch (error) {
+    console.error("Billing check error:", error);
+    // If billing check fails, redirect to dashboard
+    return redirect(`/dashboard?shop=${session?.shop || ''}`);
   }
-
-  return redirect(confirmationUrl);
 };
 
 

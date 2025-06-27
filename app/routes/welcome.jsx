@@ -16,13 +16,19 @@ import { authenticate } from "../shopify.server";
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
   
-  // Check if user has active billing
-  const { hasActivePayment } = await admin.billing.check({
-    plans: ["basic-monthly", "basic-yearly", "multi-monthly", "multi-yearly", "business-monthly", "business-yearly", "enterprise-monthly", "enterprise-yearly"],
-    isTest: true,
-  });
+  try {
+    // Check if user has active billing
+    const { hasActivePayment } = await admin.billing.check({
+      plans: ["basic-monthly", "basic-yearly", "multi-monthly", "multi-yearly", "business-monthly", "business-yearly", "enterprise-monthly", "enterprise-yearly"],
+      isTest: true,
+    });
 
-  if (!hasActivePayment) {
+    if (!hasActivePayment) {
+      return redirect("/dashboard");
+    }
+  } catch (error) {
+    console.error("Billing check error:", error);
+    // If billing check fails, redirect to dashboard
     return redirect("/dashboard");
   }
 
