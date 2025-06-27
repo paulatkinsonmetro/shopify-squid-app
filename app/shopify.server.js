@@ -32,6 +32,20 @@ const customSessionStorage = {
       }
     }
     return Promise.resolve(shopSessions);
+  },
+  async loadOfflineSession(shop) {
+    const offlineSessionId = `offline_${shop}`;
+    return Promise.resolve(sessions.get(offlineSessionId) || undefined);
+  },
+  async storeOfflineSession(session) {
+    const offlineSessionId = `offline_${session.shop}`;
+    sessions.set(offlineSessionId, session);
+    return Promise.resolve();
+  },
+  async deleteOfflineSession(shop) {
+    const offlineSessionId = `offline_${shop}`;
+    sessions.delete(offlineSessionId);
+    return Promise.resolve();
   }
 };
 
