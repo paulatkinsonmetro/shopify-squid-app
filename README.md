@@ -369,3 +369,15 @@ This template uses [Remix](https://remix.run). The following Shopify tools are a
 - [App extensions](https://shopify.dev/docs/apps/app-extensions/list)
 - [Shopify Functions](https://shopify.dev/docs/api/functions)
 - [Getting started with internationalizing your app](https://shopify.dev/docs/apps/best-practices/internationalization/getting-started)
+
+# Squid Commerce Connector
+
+A Shopify app for SAP to Shopify order synchronization with WordPress integration and managed billing.
+
+## Features
+- Shopify managed billing integration
+- WordPress dashboard for SAP configuration
+- JWT-based authentication
+- Session management with PostgreSQL
+
+<!-- Updated for Vercel deployment with PostgreSQL database -->

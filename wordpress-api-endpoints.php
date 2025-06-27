@@ -51,7 +51,7 @@ function verify_shopify_request($request) {
     
     // Check if request is coming from your Shopify app domain
     $allowed_domains = array(
-        'your-shopify-app-domain.com', // Replace with your actual app domain
+        'shopify-squid-app.vercel.app', // Your Vercel deployment
         'localhost:3000', // For development
         '127.0.0.1:3000'  // For development
     );
