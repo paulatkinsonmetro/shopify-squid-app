@@ -4,7 +4,7 @@ client_id = "c0eaefabeeae26590d493a2a27682e63"
 name = "squid"
 handle = "squid-2"
 application_url = "https://shopify-squid-app.vercel.app"
-embedded = true
+embedded = false
 
 [build]
 include_config_on_deploy = true
