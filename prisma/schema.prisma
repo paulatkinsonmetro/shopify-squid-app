@@ -11,22 +11,25 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public"]
 }
 
 model Session {
-  id            String    @id
-  shop          String
-  state         String
-  isOnline      Boolean   @default(false)
-  scope         String?
-  expires       DateTime?
-  accessToken   String
-  userId        Int?
-  firstName     String?
-  lastName      String?
-  email         String?
-  accountOwner  Boolean   @default(false)
-  locale        String?
-  collaborator  Boolean?  @default(false)
-  emailVerified Boolean?  @default(false)
+  id            String    @id @map("id")
+  shop          String    @map("shop")
+  state         String    @map("state")
+  isOnline      Boolean   @default(false) @map("isOnline")
+  scope         String?   @map("scope")
+  expires       DateTime? @map("expires")
+  accessToken   String    @map("accessToken")
+  userId        Int?      @map("userId")
+  firstName     String?   @map("firstName")
+  lastName      String?   @map("lastName")
+  email         String?   @map("email")
+  accountOwner  Boolean   @default(false) @map("accountOwner")
+  locale        String?   @map("locale")
+  collaborator  Boolean?  @default(false) @map("collaborator")
+  emailVerified Boolean?  @default(false) @map("emailVerified")
+
+  @@map("session")
 }
